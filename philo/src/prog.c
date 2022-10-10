@@ -6,7 +6,7 @@
 /*   By: audreyer <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/07 17:43:37 by audreyer          #+#    #+#             */
-/*   Updated: 2022/10/07 17:44:25 by audreyer         ###   ########.fr       */
+/*   Updated: 2022/10/10 17:02:26 by audreyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,22 +15,18 @@
 void	ft_philowrite(t_philo *philo, int text, int philonbr)
 {
 	pthread_mutex_lock(&philo->writemutex);
-	ft_putnbr(ft_gettime(philo));
-	write(1, " ", 1);
-	ft_putnbr(philonbr);
-	write(1, " ", 1);
 	if (text == 0)
-		write(1, "died\n", 5);
+		printf("%lld %i is dead\n", ft_gettime(philo), philonbr);
 	else if (text == 1)
-		write(1, "has taken a fork\n", 17);
+		printf("%lld %i has taken a fork\n", ft_gettime(philo), philonbr);
 	else if (text == 2)
-		write(1, "is eating\n", 10);
+		printf("%lld %i is eating\n", ft_gettime(philo), philonbr);
 	else if (text == 3)
-		write(1, "is sleeping\n", 12);
+		printf("%lld %i is sleeping\n", ft_gettime(philo), philonbr);
 	else if (text == 4)
-		write(1, "is thinking\n", 12);
+		printf("%lld %i is thinking\n", ft_gettime(philo), philonbr);
 	else if (text == 5)
-		write(1, "has drop\n", 9);
+		printf("%lld %i has drop\n", ft_gettime(philo), philonbr);
 	pthread_mutex_unlock(&philo->writemutex);
 }
 
@@ -91,7 +87,9 @@ int	ft_eatsleep(t_philo *philo, t_list *act)
 	act->content->last = ft_gettime(philo);
 	pthread_mutex_unlock(&act->content->lastmutex);
 	ft_philowrite(philo, 2, act->content->philonbr);
+	pthread_mutex_lock(&philo->numbermutex);
 	act->content->timehaveeat++;
+	pthread_mutex_unlock(&philo->numbermutex);
 	pthread_mutex_lock(&act->content->lastmutex);
 	act->content->last = ft_gettime(philo);
 	pthread_mutex_unlock(&act->content->lastmutex);

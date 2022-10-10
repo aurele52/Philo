@@ -6,7 +6,7 @@
 /*   By: audreyer <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/07 17:40:47 by audreyer          #+#    #+#             */
-/*   Updated: 2022/10/07 17:58:24 by audreyer         ###   ########.fr       */
+/*   Updated: 2022/10/10 16:07:22 by audreyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,9 @@ int	ft_philoinit2(t_philo *philo, int argc, char **argv)
 
 t_philo	*ft_philoinit(int argc, char **argv)
 {
-	t_philo	*philo;
-	t_pos	*garbage;
+	t_philo				*philo;
+	t_pos				*garbage;
+	struct timeval		time;
 
 	garbage = ft_setpos(0);
 	if (!garbage)
@@ -49,14 +50,13 @@ t_philo	*ft_philoinit(int argc, char **argv)
 	philo->garbage = garbage;
 	if (ft_philoinit2(philo, argc, argv) == 0)
 		return (ft_exit2(philo->garbage, "invalid argument\n"));
-	philo->time = ft_malloc(sizeof(struct timeval), philo->garbage);
-	if (!philo->time)
-		return (ft_exit2(philo->garbage, "malloc error\n"));
-	gettimeofday(philo->time, 0);
-	philo->base = (unsigned long long)philo->time->tv_usec / 1000
-		+ (unsigned long long)philo->time->tv_sec * 1000;
+	gettimeofday(&time, 0);
+	philo->base = (unsigned long long)time.tv_usec / 1000
+		+ (unsigned long long)time.tv_sec * 1000;
 	philo->philosopher = ft_setpos(philo->garbage);
 	if (pthread_mutex_init(&philo->writemutex, NULL) != 0)
+		return (ft_exit2(philo->garbage, "mutex init error\n"));
+	if (pthread_mutex_init(&philo->numbermutex, NULL) != 0)
 		return (ft_exit2(philo->garbage, "mutex init error\n"));
 	if (pthread_mutex_init(&philo->deathmutex, NULL) != 0)
 		return (ft_exit2(philo->garbage, "mutex init error\n"));
@@ -65,9 +65,11 @@ t_philo	*ft_philoinit(int argc, char **argv)
 
 unsigned long long	ft_gettime(t_philo *philo)
 {
-	gettimeofday(philo->time, 0);
-	return ((unsigned long long)philo->time->tv_usec / 1000
-		+ (unsigned long long)philo->time->tv_sec
+	struct timeval		time;
+
+	gettimeofday(&time, 0);
+	return ((unsigned long long)time.tv_usec / 1000
+		+ (unsigned long long)time.tv_sec
 		* 1000 - philo->base);
 }
 

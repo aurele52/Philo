@@ -6,7 +6,7 @@
 /*   By: audreyer <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/02 12:00:13 by audreyer          #+#    #+#             */
-/*   Updated: 2022/10/07 17:57:42 by audreyer         ###   ########.fr       */
+/*   Updated: 2022/10/10 15:40:08 by audreyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,13 +54,13 @@ typedef struct s_philo
 	unsigned long long	timetosleep;
 	unsigned long long	timetodie;
 	pthread_mutex_t		deathmutex;
+	pthread_mutex_t		numbermutex;
 	pthread_mutex_t		writemutex;
 	int					isdead;
 	int					numberofphilo;
 	int					numberoftime;
 	t_pos				*garbage;
 	t_pos				*philosopher;
-	struct timeval		*time;
 }	t_philo;
 
 typedef struct s_temp

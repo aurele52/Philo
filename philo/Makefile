@@ -6,7 +6,7 @@
 #    By: audreyer <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/21 22:50:22 by audreyer          #+#    #+#              #
-#    Updated: 2022/10/07 18:04:56 by audreyer         ###   ########.fr        #
+#    Updated: 2022/10/10 12:44:29 by audreyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME = philo
 
 CC = gcc
 
-FLAG = -fsanitize=address -Wall -Werror -Wextra
+FLAG = -Wall -Werror -Wextra
 
 SRC=	src/philosopher.c	\
 	src/ft_putnbr.c		\
