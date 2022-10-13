@@ -6,7 +6,7 @@
 /*   By: audreyer <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/07 17:49:50 by audreyer          #+#    #+#             */
-/*   Updated: 2022/10/10 17:04:16 by audreyer         ###   ########.fr       */
+/*   Updated: 2022/10/11 13:57:30 by audreyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,54 +28,44 @@ void	ft_takefork(t_philo *philo, t_list *act)
 
 void	ft_takerightfork(t_philo *philo, t_list *act)
 {
+	pthread_mutex_lock(&act->back->content->forkmutex);
 	pthread_mutex_lock(&philo->deathmutex);
-	while (act->content->rightarm == 0 && philo->isdead == 0)
+	if (philo->isdead == 0)
 	{
 		pthread_mutex_unlock(&philo->deathmutex);
-		pthread_mutex_lock(&act->back->content->forkmutex);
-		if (act->back->content->fork == 1)
-		{
-			act->content->rightarm = 1;
-			act->back->content->fork = 0;
-			ft_philowrite(philo, 1, act->content->philonbr);
-		}
-		pthread_mutex_unlock(&act->back->content->forkmutex);
-		pthread_mutex_lock(&philo->deathmutex);
-		usleep(500);
+		act->content->rightarm = 1;
+		ft_philowrite(philo, 1, act->content->philonbr);
 	}
-	pthread_mutex_unlock(&philo->deathmutex);
+	else
+		pthread_mutex_unlock(&philo->deathmutex);
 }
 
 void	ft_dropfork(t_list *act)
 {
-	act->content->leftarm = 0;
-	act->content->rightarm = 0;
-	pthread_mutex_lock(&act->next->content->forkmutex);
-	act->next->content->fork = 1;
-	pthread_mutex_unlock(&act->next->content->forkmutex);
-	pthread_mutex_lock(&act->back->content->forkmutex);
-	act->back->content->fork = 1;
-	pthread_mutex_unlock(&act->back->content->forkmutex);
+	if (act->content->leftarm == 1)
+	{
+		pthread_mutex_unlock(&act->next->content->forkmutex);
+		act->content->leftarm = 0;
+	}
+	if (act->content->rightarm == 1)
+	{
+		act->content->rightarm = 0;
+		pthread_mutex_unlock(&act->back->content->forkmutex);
+	}
 }
 
 void	ft_takeleftfork(t_philo *philo, t_list *act)
 {
+	pthread_mutex_lock(&act->next->content->forkmutex);
 	pthread_mutex_lock(&philo->deathmutex);
-	while (act->content->leftarm == 0 && philo->isdead == 0)
+	if (philo->isdead == 0)
 	{
 		pthread_mutex_unlock(&philo->deathmutex);
-		pthread_mutex_lock(&act->next->content->forkmutex);
-		if (act->next->content->fork == 1)
-		{
-			act->content->leftarm = 1;
-			act->next->content->fork = 0;
-			ft_philowrite(philo, 1, act->content->philonbr);
-		}
-		pthread_mutex_unlock(&act->next->content->forkmutex);
-		pthread_mutex_lock(&philo->deathmutex);
-		usleep(500);
+		ft_philowrite(philo, 1, act->content->philonbr);
+		act->content->leftarm = 1;
 	}
-	pthread_mutex_unlock(&philo->deathmutex);
+	else
+		pthread_mutex_unlock(&philo->deathmutex);
 }
 
 int	ft_forkinit(t_philo *philo)

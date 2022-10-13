@@ -6,7 +6,7 @@
 /*   By: audreyer <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/02 11:58:19 by audreyer          #+#    #+#             */
-/*   Updated: 2022/10/10 17:01:23 by audreyer         ###   ########.fr       */
+/*   Updated: 2022/10/10 20:01:03 by audreyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ void	ft_mutexdestroy(t_philo *philo)
 		list = list->next;
 		pthread_mutex_destroy(&list->content->forkmutex);
 		list = list->next;
-		usleep(500);
 	}
 }
 
@@ -44,20 +43,14 @@ int	ft_go(t_philo *philo, int i, t_temp *temp, t_list *mem)
 		if (ft_threadinit(philo, temp) == 0)
 			return (0);
 		mem = mem->next->next;
-	//pthread_mutex_lock(&philo->writemutex);
-	//printf("\nhello\n");
-	//pthread_mutex_unlock(&philo->writemutex);
-		usleep(500);
 	}
 	if (ft_monitorthreadinit(philo) == 0)
 		return (0);
-//	usleep(100000000);
 	mem = philo->philosopher->start;
 	while (i-- > 1)
 	{
 		pthread_join(*mem->content->philoid, NULL);
 		mem = mem->next->next;
-		usleep(500);
 	}
 	pthread_join(*philo->philosopher->start->back->content->philoid, NULL);
 	ft_mutexdestroy(philo);
@@ -85,7 +78,6 @@ int	main(int argc, char **argv)
 		ft_forkinit(philo);
 		if (!philo)
 			return (0);
-		usleep(500);
 	}
 	temp = 0;
 	mem = philo->philosopher->start;
